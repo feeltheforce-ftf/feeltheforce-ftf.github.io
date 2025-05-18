@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="We present Feel the Force (FTF), a novel framework for learning force-sensitive manipulation from natural human demonstrations. FTF uses a low-cost tactile glove and third-person cameras to collect force-trajectory data, enabling zero-shot policy transfer without any robot data during training.">   
+  <meta name="keywords" content="Feel the Force, FTF, tactile glove, human demonstration, force-sensitive manipulation, contact-rich tasks, imitation learning, robot learning, closed-loop policy, zero-shot transfer"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feel the Force</title>
+
+
+  <!-- For Google Analytical. It's optional! -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id="></script> -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', ''); // Optional: Fill id to ''.
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./static/css/custom.css">
+  <link rel="icon" href="./static/images/favicon.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="static/js/full_screen_video.js"></script>
+  <script src="static/js/auto_resize_first_page_text.js"></script>
+  <script src="static/js/open_in_new_tab.js"></script>
+</head>
+<body>
+
+<div class="full-page-image">
+  <video id="bg-video" autoplay loop muted playsinline>
+    <source src="static/videos/full_screen.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
+  <div class="first-page-title" style="padding: 0 39.5px">
+    <div class="is-size-1" id="first-page-main-title-text">
+      <span style="color:#047bff">F</span>eel <span style="color:#047bff">T</span>he <span style="color:#047bff">F</span>orce:
+      Contact-Driven Learning from Humans               
+    </div>
+    <div class="is-size-3" id="first-page-sub-title-text">
+      Zero-shot transfer of tactile human demonstrations to robotic manipulation.
+    </div>
+  </div>
+  <!-- <div class="first-page-video-speed is-size-7" id="bg-video-speed" style="padding: 0 20px">
+    <div class="is-size-7" id="bg-video-speed-text">
+      10X Speed
+    </div>
+  </div> -->
+</div>
+  
+<nav class="navbar" role="navigation" aria-label="main navigation">
+</nav>
+<!-- Paper Info Section -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <!-- Title -->
+          <h1 class="title is-1 publication-title">
+            <span style="color:#047bff">F</span>eel <span style="color:#047bff">T</span>he <span style="color:#047bff">F</span>orce:
+            <br>
+            <span class="is-size-2">Contact-Driven Learning from Human Demonstrations</span>
+          </h1>
+
+          <!-- Conference -->
+          <h2 class="title is-4">
+            <a href="https://corl2025.org" class="conference">
+              Conference on Robot Learning (<span class="grad_text">CoRL</span>) 2025
+            </a>
+          </h2>
+
+          <!-- Authors -->
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><a href="#">Author One</a><sup>*</sup>,</span>
+            <span class="author-block"><a href="#">Author Two</a><sup>*</sup>,</span>
+            <span class="author-block"><a href="#">Author Three</a>,</span>
+            <span class="author-block"><a href="#">Author Four</a>,</span>
+            <span class="author-block"><a href="#">Author Five</a><sup>&dagger;</sup></span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Institution Name</span>
+          </div>
+
+          <div class="is-size-6 publication-authors">
+            (<sup>*</sup> Equal Contribution, <sup>&dagger;</sup> Corresponding Author)
+          </div>
+
+          <!-- Buttons -->
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- Paper PDF -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2410.07554"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+
+              <!-- arXiv -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2410.07554"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+
+              <!-- Video -->
+              <span class="link-block">
+                <a href="https://youtu.be/jrUJ2Ne2vhY"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-youtube"></i></span>
+                  <span>Video</span>
+                </a>
+              </span>
+
+              <!-- Code -->
+              <span class="link-block">
+                <a href="https://github.com/feel-the-force"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- TODO: Teaser -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video class="large-video" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
+      <!-- If it is image
+        <img id="teaser" height="100%" src="/path/to/image">
+      -->
+      <h2 class="subtitle has-text-centered">
+        In contact-rich manipulation tasks, 
+        <strong>Feel the Force (FTF)</strong> leverages continuous tactile feedback to predict and regulate contact forces online, 
+        enabling successful execution—even under unexpected physical disturbances.
+      </h2>      
+    </div>
+  </div>
+</section>
+
+<!-- Optional: Qualitative Results -->
+<!-- <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/steve.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/mask.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/coffee.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/toby2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+       <!-- Abstract -->
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Robots often struggle with fine-grained force control in contact-rich manipulation tasks. While learning from human demonstrations offers a scalable solution, visual observations alone lack the fidelity needed to capture tactile intent. 
+            To bridge this gap, we propose <strong>Feel the Force (FTF)</strong>: a framework that learns force-sensitive manipulation from human tactile demonstrations.
+          </p>
+          <p>
+            FTF uses a low-cost tactile glove to measure contact forces and vision-based hand pose estimation to capture human demonstrations. These are used to train a closed-loop transformer policy that predicts robot end-effector trajectories and desired contact forces.
+            At deployment, a PD controller modulates gripper closure to match the predicted forces, enabling precise and adaptive manipulation.
+          </p>
+          <p>
+            FTF generalizes across diverse force-sensitive tasks, achieving a 75% success rate across four manipulation scenarios, and demonstrates robustness to test-time disturbances—highlighting the benefits of grounding robotic control in human tactile behavior.
+          </p>
+        </div>
+        <!-- /Abstract -->
+      </div>
+    </div>
+
+
+    <!-- TODO: Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Summary Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+<!-- Overview. -->
+<section class="section">  
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Overview</h2>
+        <div class="is-vcentered">
+          <img src="./static/images/overview.png"
+                alt="FTF Overview">
+        </div>
+        <div class="content has-text-justified">
+          <p>
+            <strong>FEELTHEFORCE (FTF)</strong> is a novel learning framework that enables robots to perform <strong>precise force-sensitive manipulation</strong> by learning from natural human interactions.
+            Unlike previous methods that rely on teleoperation or visual-only demonstrations, FTF uses a tactile glove to capture human contact forces and <strong>trains a closed-loop policy</strong> that predicts both hand trajectories and desired contact forces.
+          </p>
+          <p>
+            At deployment, this policy is retargeted to a real robot (Franka Panda) using a <strong>shared representation of hand and robot keypoints</strong>, and executed with a PD controller that modulates the gripper to match predicted forces in real time.
+            This enables <strong>zero-shot transfer</strong> from human to robot, allowing the robot to handle tasks like gently placing an egg or twisting a bottle cap with fine force control — <em>without any robot data during training</em>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Overview. -->
+<!-- Method -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Method</h2>
+
+    <!-- Tactile Data Collection -->
+    <div class="content">
+      <h3 class="title is-4">1. Tactile Data Collection</h3>
+      <img src="./static/images/glove_setup.png" alt="Tactile Data Collection">
+      <p>
+        We design a custom, low-cost tactile glove inspired by AnySkin to capture 3D contact forces during natural human manipulation.
+        The glove streams high-frequency force data, synchronized with stereo camera views capturing hand and object interactions.
+        A tactile sensor is mounted on the robot's gripper to replicate the force sensing.
+      </p>
+      <details>
+        <summary>More details</summary>
+        <p>
+          The tactile glove places magnetometer-based sensors on the underside of the thumb to minimize occlusion.
+          The sensor data is sampled at 200Hz and downsampled to align with 30Hz visual frames. The resulting force readings are used to supervise a policy trained entirely on human demonstrations, without requiring robot data.
+        </p>
+      </details>
+    </div>
+
+    <!-- Human-to-Robot Embodiment Transfer -->
+    <div class="content">
+      <h3 class="title is-4">2. Human-to-Robot Embodiment Transfer</h3>
+      <!-- <img src="./static/images/figure2_transfer.png" alt="Embodiment Transfer"> -->
+      <p>
+        We unify human and robot action spaces using a keypoint-based retargeting scheme. Human hand poses are extracted via triangulated keypoints from dual camera views and mapped onto the robot's end-effector pose.
+      </p>
+      <details>
+        <summary>More details</summary>
+        <p>
+          We compute robot position as the midpoint of thumb and index fingertip keypoints, and infer orientation via rigid-body transform between initial and current hand frames.
+          The resulting pose is projected to a set of robot keypoints for policy learning, making the method embodiment-agnostic and transferable.
+        </p>
+      </details>
+    </div>
+
+    <!-- Policy Learning -->
+    <div class="content">
+      <h3 class="title is-4">3. Policy Learning</h3>
+      <img src="./static/images/transformer_policy.png" alt="Transformer Policy Architecture">
+      <p>
+        A Transformer-based architecture learns from historical trajectories of robot and object keypoints, along with force and gripper state inputs, to predict future motion and desired contact forces.
+      </p>
+      <details>
+        <summary>More details</summary>
+        <p>
+          Each input point track is encoded through an MLP and fed into the Transformer as a token.
+          The model is trained via mean squared error on predicted point tracks and force values, leveraging temporal smoothness via action chunking and exponential averaging.
+        </p>
+      </details>
+    </div>
+
+    <!-- PD Force Controller -->
+    <div class="content">
+      <h3 class="title is-4">4. PD Force Controller</h3>
+      <!-- <img src="./static/images/pd_controller.gif" alt="PD Controller Logic"> -->
+      <p>
+        At deployment, a PD controller modulates the robot’s gripper to track the predicted contact force in real-time, ensuring robust and precise execution even under morphology or sensing discrepancies.
+      </p>
+      <details>
+        <summary>More details</summary>
+        <p>
+          The controller adjusts the gripper closure iteratively until the measured force matches the policy's predicted value. This forms a stable outer-loop around the robot hardware, correcting for noise and delay in actuation.
+        </p>
+      </details>
+    </div>
+  </div>
+</section>
+<!--/ Method -->
+
+
+<!-- Experiments -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Experiments</h2>
+
+    <!-- FTF Performance with Toggle Videos -->
+    <div class="content">
+      <h3 class="title is-4">1. FTF Performance</h3>
+      <div class="tabs is-centered is-boxed" id="ftf-video-tabs">
+        <ul>
+          <li class="is-active" data-target="video-bread"><a>Place Bread</a></li>
+          <li data-target="video-cup"><a>Unstack Cup</a></li>
+          <li data-target="video-egg"><a>Place Egg</a></li>
+          <li data-target="video-chips"><a>Place Chips</a></li>
+          <li data-target="video-cap"><a>Twist Cap</a></li>
+        </ul>
+      </div>
+
+      <div id="ftf-video-display">
+        <div class="video-content" id="video-bread">
+          <div class="columns">
+            <div class="column">
+              <h4 class="title is-5 has-text-centered">Human Demonstration</h4>
+              <video  controls autoplay muted loop playsinline width="100%">
+                <source src="./static/videos/bread_human.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="column">
+              <h4 class="title is-5 has-text-centered">Robot Manipulation</h4>
+              <video  controls autoplay muted loop playsinline width="100%">
+                <source src="./static/videos/bread_ftf.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="video-content" id="video-cup"  style="display: none;">
+          <div class="columns">
+            <div class="column">
+              <h4 class="title is-5 has-text-centered">Human Demonstration</h4>
+              <video  controls autoplay muted loop playsinline width="100%">
+                <source src="./static/videos/cup_human.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="column">
+              <h4 class="title is-5 has-text-centered">Robot Manipulation</h4>
+              <video  controls autoplay muted loop playsinline width="100%">
+                <source src="./static/videos/cup_ftf.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="video-content" id="video-egg"  style="display: none;">
+          <div class="columns">
+            <div class="column">
+              <h4 class="title is-5 has-text-centered">Human Demonstration</h4>
+              <video  controls autoplay muted loop playsinline width="100%">
+                <source src="./static/videos/egg_human.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="column">
+              <h4 class="title is-5 has-text-centered">Robot Manipulation</h4>
+              <video  controls autoplay muted loop playsinline width="100%">
+                <source src="./static/videos/egg_ftf.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="video-content" id="video-chips"  style="display: none;">
+          <div class="columns">
+            <div class="column">
+              <h4 class="title is-5 has-text-centered">Human Demonstration</h4>
+              <video  controls autoplay muted loop playsinline width="100%">
+                <source src="./static/videos/chip_human.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="column">
+              <h4 class="title is-5 has-text-centered">Robot Manipulation</h4>
+              <video  controls autoplay muted loop playsinline width="100%">
+                <source src="./static/videos/chip_ftf.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="video-content" id="video-cap"  style="display: none;">
+          <div class="columns">
+            <div class="column">
+              <h4 class="title is-5 has-text-centered">Human Demonstration</h4>
+              <video  controls autoplay muted loop playsinline width="100%">
+                <source src="./static/videos/cap_human.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="column">
+              <h4 class="title is-5 has-text-centered">Robot Manipulation</h4>
+              <video  controls autoplay muted loop playsinline width="100%">
+                <source src="./static/videos/cap_ftf.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+      </div>
+    </div>
+ 
+
+
+    <!-- Comparison to Baselines -->
+    <div class="content">
+      <h3 class="title is-4" style="margin-top: 3rem; margin-bottom: 1.5rem;">2. Comparison to Baselines</h3>
+
+      <p>TABLE I: Performance comparison of different gripper action spaces in Human Demo</p>
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <div class="table-container">
+            <table class="table is-fullwidth">
+              <tbody>
+                <tr>
+                  <th class="border-right"></th>
+                  <th class="has-text-centered">FTF</th>
+                  <th class="has-text-centered">Binary Gripper</th>
+                  <th class="has-text-centered border-right">Continuous Gripper</th>
+                </tr>
+                <tr>
+                  <th class="border-right">Place bread on plate</th>
+                  <td class="has-text-centered"><b>13/15</b></td>
+                  <td class="has-text-centered">0/15</td>
+                  <td class="has-text-centered border-right">0/15</td>
+                </tr>
+                <tr>
+                  <th class="border-right">Unstack cup</th>
+                  <td class="has-text-centered"><b>9/15</b></td>
+                  <td class="has-text-centered">0/15</td>
+                  <td class="has-text-centered border-right">0/15 (2 picked 3 cups)</td>
+                </tr>
+                <tr>
+                  <th class="border-right">Place egg in pot</th>
+                  <td class="has-text-centered"><b>13/15</b></td>
+                  <td class="has-text-centered">0/15</td>
+                  <td class="has-text-centered border-right">0/15</td>
+                </tr>
+                <tr>
+                  <th class="border-right">Place chips</th>
+                  <td class="has-text-centered"><b>10/15</b></td>
+                  <td class="has-text-centered">0/15</td>
+                  <td class="has-text-centered border-right">0/15</td>
+                </tr>
+                <tr>
+                  <th class="border-right">Twist bottle cap</th>
+                  <td class="has-text-centered"><b>13/15</b></td>
+                  <td class="has-text-centered">11/15</td>
+                  <td class="has-text-centered border-right">0/15</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <p>TABLE II: Performance comparison of different gripper action spaces in Robot Teleop Demo</p>
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <div class="table-container">
+            <table class="table is-fullwidth">
+              <tbody>
+                <tr>
+                  <th class="border-right"></th>
+                  <th class="has-text-centered">FTF</th>
+                  <th class="has-text-centered">Binary Gripper</th>
+                  <th class="has-text-centered border-right">Continuous Gripper</th>
+                </tr>
+                <tr>
+                  <th class="border-right">Place bread on plate</th>
+                  <td class="has-text-centered"><b>5/15</b></td>
+                  <td class="has-text-centered">0/15</td>
+                  <td class="has-text-centered border-right">3/15</td>
+                </tr>
+                <tr>
+                  <th class="border-right">Unstack cup</th>
+                  <td class="has-text-centered"><b>4/15</b></td>
+                  <td class="has-text-centered">0/15 (6 picked 3 cups)</td>
+                  <td class="has-text-centered border-right">0/15 (2 picked 2 cups)</td>
+                </tr>
+                <tr>
+                  <th class="border-right">Place egg in pot</th>
+                  <td class="has-text-centered">0/15</td>
+                  <td class="has-text-centered">0/15</td>
+                  <td class="has-text-centered border-right">0/15</td>
+                </tr>
+                <tr>
+                  <th class="border-right">Place chips</th>
+                  <td class="has-text-centered"><b>3/15</b></td>
+                  <td class="has-text-centered">0/15</td>
+                  <td class="has-text-centered border-right">0/15</td>
+                </tr>
+                <tr>
+                  <th class="border-right">Twist bottle cap</th>
+                  <td class="has-text-centered">9/15</td>
+                  <td class="has-text-centered"><b>12/15</b></td>
+                  <td class="has-text-centered border-right">8/15</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Failure Case Analysis -->
+    <!-- Failure Case Analysis -->
+    <div class="content">
+      <h3 class="title is-4" style="margin-top: 3rem; margin-bottom: 1.5rem;">3. Failure Case Analysis of Baseline Policies</h3>
+
+      <h4 class="title is-5">Overforce-Induced Object Damage (Binary Gripper)</h4>
+      <p>Binary gripper policies lack fine force control, often resulting in crushed objects during manipulation.</p>
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content has-text-centered">
+            <video class="medium-video" controls muted loop autoplay playsinlinee height="100%">
+              <source src="./static/videos/egg_bin.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        <div class="column">
+          <div class="content has-text-centered">
+            <video class="medium-video" controls muted loop autoplay playsinline height="100%">
+              <source src="./static/videos/bread_bin.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        <div class="column">
+          <div class="content has-text-centered">
+            <video class="medium-video" controls muted loop autoplay playsinline height="100%">
+              <source src="./static/videos/cap_bin.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+
+      <h4 class="title is-5">Grasp Instability from Misaligned Distance Mapping (Continuous Gripper)</h4>
+      <p>Continuous gripper policies incorrectly map human hand distances to robot gripper apertures, resulting in unstable grasps or missed pickups.</p>
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content has-text-centered">
+            <video class="medium-video" controls muted playsinline height="100%">
+              <source src="./static/videos/failure_case/continuous_slip_chips.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        <div class="column">
+          <div class="content has-text-centered">
+            <video class="medium-video" controls muted playsinline height="100%">
+              <source src="./static/videos/failure_case/continuous_miss_cup.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        <div class="column">
+          <div class="content has-text-centered">
+            <video class="medium-video" controls muted playsinline height="100%">
+              <source src="./static/videos/failure_case/continuous_drop_egg.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- TODO: BibTex -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{place holder,
+  title     = {Place holder},
+  author    = {Place holder},
+  journal   = {Place holder},
+  year      = {2025}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is modified from <a
+              href="https://github.com/nerfies/nerfies.github.io">Nerfies Template</a>.
+            Some website materials are adapted from <a
+              href="https://transic-robot.github.io/">T<span style="font-variant-caps:all-small-caps;">RANSIC</span></a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+
+</html>
