@@ -85,11 +85,11 @@
           </h1>
 
           <!-- Conference -->
-          <h2 class="title is-4">
+          <!-- <h2 class="title is-4">
             <a href="https://corl2025.org" class="conference">
               Conference on Robot Learning (<span class="grad_text">CoRL</span>) 2025
             </a>
-          </h2>
+          </h2> -->
 
          <!-- Authors -->
         <div class="is-size-5 publication-authors">
@@ -253,7 +253,7 @@
             At deployment, a PD controller modulates gripper closure to match the predicted forces, enabling precise and adaptive manipulation.
           </p>
           <p>
-            FTF generalizes across diverse force-sensitive tasks, achieving a 75% success rate across four manipulation scenarios, and demonstrates robustness to test-time disturbances—highlighting the benefits of grounding robotic control in human tactile behavior.
+            FTF generalizes across 5 force-sensitive tasks, achieving a 77% success rate across four manipulation scenarios, and demonstrates robustness to test-time disturbances—highlighting the benefits of grounding robotic control in human tactile behavior.
           </p>
         </div>
         <!-- /Abstract -->
@@ -288,11 +288,11 @@
         <div class="content has-text-justified">
           <p>
             <strong>FEELTHEFORCE (FTF)</strong> is a novel learning framework that enables robots to perform <strong>precise force-sensitive manipulation</strong> by learning from natural human interactions.
-            Unlike previous methods that rely on teleoperation or visual-only demonstrations, FTF uses a tactile glove to capture human contact forces and <strong>trains a closed-loop policy</strong> that predicts both hand trajectories and desired contact forces.
+            Unlike previous methods that rely on teleoperation or visual-only demonstrations, FTF uses a tactile glove to capture human contact forces and trains a closed-loop policy that predicts both hand trajectories and desired contact forces.
           </p>
           <p>
-            At deployment, this policy is retargeted to a real robot (Franka Panda) using a <strong>shared representation of hand and robot keypoints</strong>, and executed with a PD controller that modulates the gripper to match predicted forces in real time.
-            This enables <strong>zero-shot transfer</strong> from human to robot, allowing the robot to handle tasks like gently placing an egg or twisting a bottle cap with fine force control — <em>without any robot data during training</em>.
+            At deployment, this policy is retargeted to a real robot (Franka Panda) using a shared representation of hand and robot keypoints, and executed with a PD controller that modulates the gripper to match predicted forces in real time.
+            This enables <strong>zero-shot transfer from human to robot</strong>, allowing the robot to handle tasks like gently placing an egg or twisting a bottle cap with fine force control — <em>without any robot data during training</em>.
           </p>
         </div>
       </div>
@@ -520,7 +520,7 @@
                 <tr>
                   <th class="border-right">Twist bottle cap</th>
                   <td class="has-text-centered"><b>13/15</b></td>
-                  <td class="has-text-centered">11/15</td>
+                  <td class="has-text-centered">11/15 (1/15 break gripper pads)</td>
                   <td class="has-text-centered border-right">0/15</td>
                 </tr>
               </tbody>
@@ -576,6 +576,7 @@
           </div>
         </div>
       </div>
+      <!-- <p>All models are trained on 30 demos per task.</p> -->
     </div>
 
     <!-- Failure Case Analysis -->
@@ -584,7 +585,7 @@
       <h3 class="title is-4" style="margin-top: 3rem; margin-bottom: 1.5rem;">3. Failure Case Analysis of Baseline Policies</h3>
 
       <h4 class="title is-5">Overforce-Induced Object Damage (Binary Gripper)</h4>
-      <p>Binary gripper policies lack fine force control, often resulting in crushed objects during manipulation.</p>
+      <p>Binary gripper policies often result in crushed objects during manipulation.</p>
       <div class="columns is-centered">
         <div class="column">
           <div class="content has-text-centered">
